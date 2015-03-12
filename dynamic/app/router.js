@@ -6,7 +6,8 @@ var Router = Ember.Router.extend({
 });
 
 Router.map(function() {
-  this.route('about', { path: '/om-mig' });
+  this.route('about', { path: '/about' });
+  this.route('header', { path: '/'} );
 });
 
 export default Router;
