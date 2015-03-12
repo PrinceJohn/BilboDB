@@ -18,6 +18,7 @@ var app = new EmberApp();
 // along with the exports of each module as its value.
 // app.import('bower_components/isotope/isotope.pkgd.min.js');
 // app.import('bower_components/masonry/masonry.js');
-app.import('bower_components/tablesorter/jquery.tablesorter.js');
+app.import('public/lib/tablesorter/jquery.tablesorter.js');
+app.import('public/lib/isotope/isotope.js');
 
 module.exports = app.toTree();

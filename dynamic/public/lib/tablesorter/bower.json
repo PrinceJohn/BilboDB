@@ -1,0 +1,10 @@
+{
+  "name": "tablesorter",
+  "version": "0.0.0",
+  "authors": [
+    "Andreas Hansson <cyber_ante@hotmail.com>"
+  ],
+  "main": "jquery.tablesorter.js",
+  "license": "MIT",
+  "private": true
+}
