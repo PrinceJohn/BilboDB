@@ -112,6 +112,7 @@ ul {
 
 
 /*** EMBER ***/
+/* Default Ember-View has no height, this override prevents this */
 .ember-view {
 	height: 100%;
 }
@@ -141,97 +142,8 @@ ul {
 }
 
 #innerWrapper.slide {
-	-webkit-transform:translate3d(320px,0,0);
+	-webkit-transform:translate3d(0,0,0);
 }
-
-	#dialog {
-		position: absolute;
-		width: 580px;
-		height: 320px;
-		top: 50%;
-		left: 50%;
-		margin-left: -290px;
-		margin-top: -160px;
-
-		border-radius: 2px;
-		background: #292929;
-
-		z-index: 2;
-		-webkit-box-shadow: 0 8px 20px 0 rgba(0,0,0,0.5);
-		opacity: 0.97;
-		visibility: hidden;
-	}
-	#dialog.visible {
-		visibility: visible;
-	}
-
-		#dialogClose {
-			cursor: pointer;
-			position: absolute;
-			top: 14px;
-			right: 14px;
-			width: 16px;
-			height: 17px;
-			background: url( /img/icons/close.png ) no-repeat;
-		}
-		#dialogClose:hover {
-			background-image: url( /img/icons/closeHover.png );
-		}
-
-		#dialogInner {
-			padding: 42px 42px 18px 42px;
-			width: 100%;
-			height: 100%;
-
-			box-sizing: border-box;
-		}
-
-			#dialogTitle {
-				font: 22px 'proxima_nova_rgbold';
-				color: #eee;
-				width: 100%;
-			}
-
-			.dialogInput {
-				font: 12px 'proxima_nova_rgregular';
-				color: #eee;
-				background: #292929;
-				border: 0;
-				border-bottom: 1px solid #aaa;
-				width: 100%;
-				margin-bottom: 35px;
-			}
-			.dialogInput:focus {
-				outline-width: 0;
-			}
-			.dialogInput:first-child {
-				margin-top: 35px;
-				width: 370px;
-			}
-			.dialogInput:nth-child(2) {
-				width: 111px;
-				margin-left: 11px;
-			}
-			.dialogInput::-webkit-input-placeholder {
-				font: 12px 'proxima_novalight_italic';
-				color: #aaa;
-			}
-
-			#dialogSubmit {
-				background: #aaa;
-				border-radius: 30px;
-				width: 93px;
-				height: 39px;
-				border: 0;
-				outline-width: 0;
-				text-transform: uppercase;
-				font: 12px 'proxima_nova_rgbold';
-				cursor: pointer;
-			}
-			#dialogSubmit:hover {
-				background: #eee;
-			}
-
 
 #contentWrapper {
 	position: absolute;
@@ -265,9 +177,15 @@ ul {
 			padding: 7px 0;
 			visibility: visible;
 			box-sizing: border-box;
+
+			-webkit-transform: translate3d(0,0,0);
+			-webkit-transition: transform 0.2s ease;
 		}
 		#tableWrapper.hidden {
 			visibility: hidden;
+		}
+		#innerWrapper.slide #tableWrapper {
+			-webkit-transform: translate3d(320px,0,0);
 		}
 
 
@@ -298,7 +216,7 @@ ul {
 	height: 48px;
 	width: 100%;
 /*	border-bottom: 5px solid #33b5e5;*/
-	position: absolute;
+	position: fixed;
 	top: 0;
 	left: 0;
 	z-index: 6;
@@ -312,7 +230,7 @@ ul {
 	width: 100%;
 	height: 5px;
 	background: #33b5e5;
-	position: absolute;
+	position: fixed;
 	top: 48px;
 	z-index: 5;
 
@@ -469,7 +387,94 @@ ul {
 			}
 
 
+/*** DIALOG ***/
+#dialog {
+	position: absolute;
+	width: 580px;
+	height: 320px;
+	top: 50%;
+	left: 50%;
+	margin-left: -290px;
+	margin-top: -160px;
 
+	border-radius: 2px;
+	background: #292929;
+
+	z-index: 2;
+	-webkit-box-shadow: 0 8px 20px 0 rgba(0,0,0,0.5);
+	opacity: 0.97;
+	visibility: hidden;
+}
+#dialog.active {
+	visibility: visible;
+}
+
+	#dialogClose {
+		cursor: pointer;
+		position: absolute;
+		top: 14px;
+		right: 14px;
+		width: 16px;
+		height: 17px;
+		background: url( /img/icons/close.png ) no-repeat;
+	}
+	#dialogClose:hover {
+		background-image: url( /img/icons/closeHover.png );
+	}
+
+	#dialogInner {
+		padding: 42px 42px 18px 42px;
+		width: 100%;
+		height: 100%;
+
+		box-sizing: border-box;
+	}
+
+		#dialogTitle {
+			font: 22px 'proxima_nova_rgbold';
+			color: #eee;
+			width: 100%;
+		}
+
+		.dialogInput {
+			font: 12px 'proxima_nova_rgregular';
+			color: #eee;
+			background: #292929;
+			border: 0;
+			border-bottom: 1px solid #aaa;
+			width: 100%;
+			margin-bottom: 35px;
+		}
+		.dialogInput:focus {
+			outline-width: 0;
+		}
+		.dialogInput:first-child {
+			margin-top: 35px;
+			width: 370px;
+		}
+		.dialogInput:nth-child(2) {
+			width: 111px;
+			margin-left: 11px;
+		}
+		.dialogInput::-webkit-input-placeholder {
+			font: 12px 'proxima_novalight_italic';
+			color: #aaa;
+		}
+
+		#dialogSubmit {
+			background: #aaa;
+			border-radius: 30px;
+			width: 93px;
+			height: 39px;
+			border: 0;
+			outline-width: 0;
+			text-transform: uppercase;
+			font: 12px 'proxima_nova_rgbold';
+			cursor: pointer;
+		}
+		#dialogSubmit:hover {
+			background: #eee;
+		}
 
 
 
@@ -499,13 +504,29 @@ ul {
 	width: 320px;
 	height: 100%;
 	color: #aaa;
+	z-index: 1000;
 	-webkit-backface-visibility: hidden;
 	-webkit-transition: -webkit-transform 0.2s ease;
 	-webkit-transform: translate3d(-320px,0,0) ;
 }
-#asideMenu.slide {
+#innerWrapper.slide #asideMenu {
 	-webkit-transform: translate3d(0,0,0);
 }
+
+#asideMenuClose {
+	cursor: pointer;
+	position: absolute;
+	top: 14px;
+	right: 14px;
+	width: 16px;
+	height: 17px;
+	background: url( /img/icons/close.png ) no-repeat;
+}
+#asideMenuClose:hover {
+	background-image: url( /img/icons/closeHover.png );
+}
+
+
 	#asideWrapper {
 		height: 100%;
 		padding: 16px 0;
@@ -513,6 +534,7 @@ ul {
 		position: relative;
 		overflow-y: auto;
   		-webkit-overflow-scrolling: touch;
+
 	}
 
 		#asideTitle {
@@ -586,14 +608,9 @@ ul {
 
 			/* Children of expandable lists*/
 			.asideList .asideListItem.child {
-				border-left: 3px solid #333;
 			}
 			.asideList .asideListItem.child:hover {
 				border-color: #222;
-			}
-			/*.asideList .asideListItem.child:hover,*/ .asideList .asideListItem.child.active {
-				border-color: #0099CC;
-				background: #272727;
 			}
 
 				/* Text and icons in list */
@@ -603,9 +620,15 @@ ul {
 					padding: 0 14px;
 					display: block;
 					cursor: pointer;
+					border-left: 3px solid #333;
 					box-sizing: border-box;
 				}
 				.asideList .asideListItem .container:hover {
+					background: #272727;
+					border-color: #272727;
+				}
+				/*.asideList .asideListItem.child:hover,*/ .asideList .asideListItem.child .container.active {
+					border-color: #0099CC;
 					background: #272727;
 				}
 
@@ -616,14 +639,12 @@ ul {
 						.asideListItem .container .arrow .inner {
 							width: 5px;
 							height: 8px;
-							/*visibility: hidden;*/
 							display: inline-block;
 							background: url( /img/icons/listArrow.png ) no-repeat;
 							-webkit-transition: -webkit-transform 0.2s ease;
 							-webkit-transform: rotate( 0deg );
 						}
-						.asideList.expanded .container .arrow .inner {
-							visibility: visible;
+						.asideList.expanded .container .arrow .inner, .container.active .arrow .inner {
 							-webkit-transform: rotate( 90deg );
 						}
 
@@ -662,11 +683,9 @@ ul {
 						/*.asideListItem .container:hover .icon .inner  {
 							background: url( /img/icons/databaseActive.png ) no-repeat;
 						}*/
-
-
-					/*.asideListItem .container:hover .icon.table .inner,*/ .asideListItem.active .container .icon.table .inner {
-						background-image: url( /img/icons/tableActive.png );
-					}
+						/*.asideListItem .container:hover .icon.table .inner,*/ .asideListItem .container.active .icon.table .inner {
+							background-image: url( /img/icons/tableActive.png );
+						}
 
 					/* Text in list */
 					.asideList .asideListItem .container .text {
@@ -681,7 +700,7 @@ ul {
 					.asideList .asideListItem.child .container .text {
 						padding-left: 55px;
 					}
-					/*.asideList .asideListItem .container:hover .text, */.asideList .asideListItem.child.active .container .text {
+					/*.asideList .asideListItem .container:hover .text, */.asideList .asideListItem.child .container.active .text {
 						color: #fff;
 						cursor: pointer;
 						font-family: 'proxima_novasemibold';
@@ -701,6 +720,12 @@ ul {
 							position: absolute;
 							right: 0;
 							top: 0;
+
+							-webkit-transform: scale(1,1);
+							-webkit-transition: -webkit-transform 0.4s ease;
+						}
+						.asideList .text .listItemChanges.clear {
+							-webkit-transform: scale(0,0);
 						}
 
 
@@ -889,8 +914,23 @@ ul {
 				resize: none;
 			}
 
+/*** PRELOADER ***/
+#preloaderContainer {
+	width: 42px;
+	height: 42px;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin-left: -21px;
+	margin-top: -21px;
+}
 
-
+	#preloader {
+		width: 42px;
+		height: 42px;
+		display: block;
+		background: url( /img/preloaders/preloader.GIF ) no-repeat;
+	}
 
 
 

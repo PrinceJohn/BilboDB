@@ -1,9 +1,10 @@
 <div id="asideWrapper">
+	<span {{action 'close' }} id="asideMenuClose"></span>
 	<div id="asideTitle">
 		<span>Dewire DB</span>
 	</div>
 	<div id="asideSearch">
-		<input id="asideSearchInput" type="search" placeholder="Sök efter tabeller..." />
+		{{input value=searchFilter type="search" id="asideSearchInput" placeholder="Sök efter 2 tabeller..." }}
 	</div>
 	<div class="asideListTitle">
 		<span class="inner">Databaser</span>
@@ -12,7 +13,7 @@
 	<div class="asideListContainer">
 		<ul class="asideList">
 			<li class="asideListItem">
-				<a id="addDatabase" class="container clr">
+				<a {{action 'showDialog'}} id="addDatabase" class="container clr">
 					<div class="arrow left">
 					</div>
 					<div class="icon add left">
@@ -25,68 +26,42 @@
 				</a>
 			</li>
 		</ul>
-		<ul class="asideList">
-			<li class="asideListItem colapsed parent">
-				<a class="container">
-					<div class="arrow left">
-						<span class="inner"></span>
-					</div>
-					<div class="icon left">
-						<span class="inner"></span>
-					</div>
-					<div class="text">
-						<span class="listItemName">Dewire DB</span>
-						<span class="listItemChanges"></span>
-					</div>
-				</a>
-				<ul class="asideList">
-					<li class="asideListItem child" data-filter=".Users">
-						<a class="container">
-							<div class="Icon table left">
+		{{#each database in model }}
+			<ul class="asideList">
+				<li class="asideListItem colapsed parent">
+					{{#view 'databaseitem'}}
+						{{#link-to 'database' database.id database.name class="container parentC" title=database.name }}
+							<div class="arrow left">
+								<span class="inner"></span>
+							</div>
+							<div class="icon left">
 								<span class="inner"></span>
 							</div>
 							<div class="text">
-								<span class="listItemName" >Users</span>
-								<span class="listItemChanges"></span>
+								<span class="listItemName">{{database.name}}</span>
 							</div>
-						</a>
-					</li>
-					<li class="asideListItem child" data-filter=".Files">
-						<a class="container">
-							<div class="Icon table left">
-								<span class="inner"></span>
-							</div>
-							<div class="text">
-								<span class="listItemName" >Files</span>
-								<span class="listItemChanges"></span>
-							</div>
-						</a>
-					</li>
-					<li class="asideListItem child" data-filter=".UserPermissions">
-						<a class="container">
-							<div class="Icon table left">
-								<span class="inner"></span>
-							</div>
-							<div class="text">
-								<span class="listItemName">UserPermissions</span>
-								<span class="listItemChanges">11</span>
-							</div>
-						</a>
-					</li>
-					<li class="asideListItem child" data-filter=".Teams">
-						<a class="container">
-							<div class="Icon table left">
-								<span class="inner"></span>
-							</div>
-							<div class="text">
-								<span class="listItemName">Teams</span>
-								<span class="listItemChanges">11</span>
-							</div>
-						</a>
-					</li>
-				</ul>
-			</li>
-		</ul>	
+						{{/link-to}}					  
+					{{/view}}
+					{{#each table in database.table }}
+						<ul class="asideList">
+							{{#view 'tableitem'}}
+								{{#link-to 'table' database.id database.name table.id table.name  title=table.name class="container" }}
+									<div class="icon table left">
+										<span class="inner"></span>
+									</div>
+									<div class="text">
+										<span class="listItemName" >{{table.name}}</span>
+										{{#if table.noOfChanges}}
+										  <span class="listItemChanges">{{table.noOfChanges}}</span>
+										{{/if}}
+									</div>
+								{{/link-to}}
+							{{/view}}
+						</ul>
+					{{/each}}
+				</li>
+			</ul>	  
+		{{/each}}
 	</div>
-	<div class="asideDivider"></div>
+	<div class="asideDivider"></div>	
 </div>

@@ -1,15 +1,12 @@
 <div id="wrapper">
-	<div id="innerWrapper" class="">
-		<header id="header" class="g_noSelect">
-			{{outlet}}
-		</header>
-		<div id="headerBorder"></div>
+	<div id="innerWrapper" class="slide">
 		<aside id="asideMenu" class="g_noSelect">
+			{{ render "asidemenu" model.database }}
 		</aside>
 		<section id="contentWrapper">
 			<div id="contentInnerWrapper">
-				<div id="tableWrapper" class="hidden g_noSelect">		
-				</div>
+				{{render "dialog" dialog}}
+				{{outlet}}
 			</div>
 		</section>
 	</div>

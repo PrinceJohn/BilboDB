@@ -1,24 +1,37 @@
-<div id="headerInner">
-	<div id="headerTitle">
-		<span>Dewire DB</span>
-	</div> 
-	<div id="headerIcon">
-		<ul class="headerIconList left clr">
-			<li class="headerIconListItem left">
-				<a href="#" id="menu" class="headerMenuIcon"></a>
-			</li>
-		</ul>
-		<ul class="headerIconList right clr">
-			<li class="headerIconListItem right">
-				<a href="#" id="structure" class="headerMenuIcon"></a>
-			</li>							
-			<li class="headerIconListItem right">
-				<a href="#" id="chain" class="headerMenuIcon"></a>
-			</li>
-			<li class="headerIconListItem right">
-				<a href="#" id="search" class="headerMenuIcon left"></a>
-				<input type="search" id="searchInput" class="left" placeholder="Sök efter tabelldata..." />
-			</li>					
-		</ul>
+<header id="header" class="g_noSelect">
+	<div id="headerInner">
+		<div id="headerTitle">	
+			{{#if this.model.database.name }}
+				<span>{{this.model.database.name}} - {{this.model.name}}</span>
+			{{else}}
+				{{#if this.model.name}}
+					<span>{{this.model.name}}</span>
+				{{else}}
+					<span>Dewire DB</span>
+				{{/if}}
+			{{/if}}	
+		</div> 
+		<div id="headerIcon">
+			<ul class="headerIconList left clr">
+				<li class="headerIconListItem left">
+					<a {{ action "toggleMenu" }} class="headerMenuIcon" href="#" id="menu"></a>
+				</li>
+			</ul>
+			{{#if this.model.database }}
+				<ul class="headerIconList right clr">
+					<li class="headerIconListItem right">
+						<a href="#" id="structure" class="headerMenuIcon"></a>
+					</li>							
+					<li class="headerIconListItem right">
+						<a href="#" id="chain" class="headerMenuIcon"></a>
+					</li>
+					<li class="headerIconListItem right">
+						<a {{action 'toggleSearch' }} href="#" id="search" class="headerMenuIcon left"></a>
+						<input {{action 'headerSearch' on='keyUp' }} type="search" id="searchInput" class="left" placeholder="Sök efter tabelldata..."/>
+					</li>					
+				</ul>
+			{{/if}}
+		</div>
 	</div>
-</div>
+</header>
+<div id="headerBorder"></div>

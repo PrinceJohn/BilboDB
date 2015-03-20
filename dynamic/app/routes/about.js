@@ -2,6 +2,10 @@ import Ember from 'ember';
 
 export default Ember.Route.extend({
 	renderTemplate: function() {
-		this.render('about');
+		this.render( 'about', {
+				outlet: 'about',
+				into: 'application'
+			}
+		);
 	}
 });
