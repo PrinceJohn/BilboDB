@@ -1,7 +1,7 @@
 import Ember from 'ember';
 
 export default Ember.View.extend({
-	click: function(event) {
+	click: function() {
 		var test = Ember.$(this.element).parent().parent();
 		if( test.hasClass('expanded') ) {
 			test.removeClass('expanded');

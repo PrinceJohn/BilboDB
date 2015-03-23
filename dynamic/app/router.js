@@ -6,20 +6,16 @@ var Router = Ember.Router.extend({
 });
 
 Router.map(function() {
-    // this.route('about', { path: '/' });
-    // this.resource('asidemenu', { path: '/'}, function() {
-        
-    // });
-    // this.route( 'asidemenu', {path: '/'} );
+
     this.resource( 'application', {path: '/'}, function() {
-        this.resource('database', { path: '/:id/:database' }, function() {
-            this.resource('table', { path: '/:id/:table'}, function() {
+        this.resource('database', { path: '/:database/:database_id' }, function() {
+            this.resource('table', { path: '/:table/:id'}, function() {
                 
             } );
         });
     });
 
-    this.route( 'fourOhFour', {path: "*path" });
+    // this.route( 'fourOhFour', {path: "*path" });
     
 }); 
 

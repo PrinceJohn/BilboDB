@@ -3,11 +3,7 @@
 		<aside id="asideMenu" class="g_noSelect">
 			{{ render "asidemenu" model.database }}
 		</aside>
-		<section id="contentWrapper">
-			<div id="contentInnerWrapper">
-				{{render "dialog" dialog}}
-				{{outlet}}
-			</div>
-		</section>
+		{{render "dialog" dialog}}
+		{{outlet}}
 	</div>
 </div>

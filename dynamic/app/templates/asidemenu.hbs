@@ -30,7 +30,7 @@
 			<ul class="asideList">
 				<li class="asideListItem colapsed parent">
 					{{#view 'databaseitem'}}
-						{{#link-to 'database' database.id database.name class="container parentC" title=database.name }}
+						{{#link-to 'database' database.name database.id class="container parentC" title=database.name }}
 							<div class="arrow left">
 								<span class="inner"></span>
 							</div>
@@ -45,7 +45,7 @@
 					{{#each table in database.table }}
 						<ul class="asideList">
 							{{#view 'tableitem'}}
-								{{#link-to 'table' database.id database.name table.id table.name  title=table.name class="container" }}
+								{{#link-to 'table' database.name database.id table.name table.id  title=table.name class="container" }}
 									<div class="icon table left">
 										<span class="inner"></span>
 									</div>

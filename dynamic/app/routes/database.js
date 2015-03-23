@@ -6,18 +6,18 @@ export default Ember.Route.extend({
 	},
 
 	actions: {
-		loading: function(transition, originRoute) {
+		loading: function() {
 			console.log('Loading database');
 			// Return true to bubble this event
 			return true;
 		},
 
-		error: function() {
-			console.log('Error database');
+		error: function( error ) {
+			console.log( error.message );
 		}
 	},
 
 	model: function( params ) {
-		return this.store.find("database", params.id);
+		return this.store.find("database", params.database_id);
 	}
 });

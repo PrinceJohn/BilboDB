@@ -5,8 +5,8 @@ export default Ember.Route.extend({
 		
 	},
 	actions: {
-		loading: function(transition, originRoute) {
-			console.log('Loading table...');
+		loading: function() {
+			//console.log('Loading table...');
 
 			// Return true to bubble this event
 			return true;
@@ -22,7 +22,14 @@ export default Ember.Route.extend({
 		data = data.replace(/ /g,"-");
 		console.log( data );
 		return this.store.find( data );*/
-		return this.store.find("table", params.id);
+
+		//return this.store.find("table", params.id);
+		return Ember.RSVP.hash({
+			table: 		this.store.find("table", params.id),
+			column: 	this.store.find("column"),
+			row:		this.store.find("row"),
+			rowcontent: this.store.find('rowcontent')
+		});
 	}
 
 });
