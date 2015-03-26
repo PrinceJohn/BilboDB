@@ -17,7 +17,6 @@ export default DS.Model.extend({
 			name: 'id',
 			dataType: 'int',
 			table: 2
-
 		},
 
 		{

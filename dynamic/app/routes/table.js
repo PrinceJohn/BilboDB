@@ -2,18 +2,18 @@ import Ember from 'ember';
 
 export default Ember.Route.extend({
 	activate: function() {
-		
+
 	},
 	actions: {
 		loading: function() {
-			//console.log('Loading table...');
-
+			// console.log('Loading table...');
 			// Return true to bubble this event
 			return true;
 		},
+
 		error: function() {
 			console.log( 'Error loading table');
-		}
+		},
 	},
 
 	model: function(params){
@@ -30,6 +30,9 @@ export default Ember.Route.extend({
 			row:		this.store.find("row"),
 			rowcontent: this.store.find('rowcontent')
 		});
+	},
+
+	afterModel: function() {
 	}
 
 });

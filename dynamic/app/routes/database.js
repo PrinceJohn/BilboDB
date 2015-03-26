@@ -7,7 +7,7 @@ export default Ember.Route.extend({
 
 	actions: {
 		loading: function() {
-			console.log('Loading database');
+			// console.log('Loading database');
 			// Return true to bubble this event
 			return true;
 		},

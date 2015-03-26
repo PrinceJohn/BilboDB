@@ -1,8 +1,23 @@
 {{render "header" this.model}}
+<div id="actionBar" class="clr g_noSelect">
+	<span id="infoText" class="left"><strong id="numberOfRows">1</strong> rad markerad i <strong id="tableNames">Users</strong></span>
+	<a class="actionContainer left">
+		<div class="inner clr">
+			<span class="actionIcon add left"></span>
+			<span class="actionText left">Lägg till</span>
+		</div>
+	</a>				
+	<a class="actionContainer left">
+		<div class="inner clr">
+			<span class="actionIcon delete left"></span>
+			<span class="actionText left">Ta bort</span>
+		</div>
+	</a>
+</div>
 <section id="contentWrapper">
 	<div id="contentInnerWrapper">
 		<div id="tableWrapper" class="g_noSelect">
-				{{#each table in model.table.relatedTables}}
+			{{#each table in model.table.relatedTables}}
 				<div class="tableContainer Users Files Teams UserPermissions">
 					<div class="tableTitle">
 						<div class="titleDeco"></div>
@@ -12,25 +27,25 @@
 						<thead class="tableHead">
 							<tr class="tableRowHeader">
 								<th class="tableHeadCol">
-									<input type="checkbox" />
+									{{input type="checkbox" checked=markRow}}
 								</th>
 								{{#each column in model.table.columns }}
-									<th class="tableHeadCol">
+									{{#view 'tablecolumn'}}
 										<div class="text">
 											<span>{{column.name}}</span>
 										</div>
 										<div class="iconContainer">
 											<span class="arrowSort"></span>
 										</div>
-									</th>
+									{{/view}}
 								{{/each}}
 							</tr>
 						</thead>
 						<tbody class="tableBody">
-							{{#each row in model.table.rows }}
-								  <tr {{ bind-attr class="even odd :tableRow" }}>
+							{{#each row in model.table.rows itemController=rowscontroller }}
+								  <tr {{ bind-attr class="row.isMarked:active :tableRow" }}>
 								  	<td class="tableCol">
-										<input type="checkbox" data-filter="users-1"/>
+										{{input type="checkbox" checked=row.isMarked action='hej' }}
 									</td>
 									{{#each rowd in row.rowcontents }}
 										<td class="tableCol">
@@ -39,34 +54,6 @@
 									{{/each}}
 								</tr>	
 							{{/each}}
-							<tr class="tableRow even" data-row="users-1">
-								<td class="tableCol">
-									<input type="checkbox" data-filter="users-1"/>
-								</td>
-								<td class="tableCol">
-									<span class="tableData">1</span>
-								</td>
-								<td class="tableCol">
-									<span class="tableData">Yngve</span>
-								</td>
-								<td class="tableCol">
-									<span class="tableData">kalasklister</span>
-								</td>
-							</tr>									
-							<tr class="tableRow odd" data-row="users-2">
-								<td class="tableCol">
-									<input type="checkbox" data-filter="users-2"/>
-								</td>
-								<td class="tableCol">
-									<span class="tableData">2</span>
-								</td>
-								<td class="tableCol">
-									<span class="tableData">Angelica</span>
-								</td>
-								<td class="tableCol">
-									<span class="tableData">kusinvitamin</span>
-								</td>
-							</tr>
 						</tbody>
 					</table>
 				</div>

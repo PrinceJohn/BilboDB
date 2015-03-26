@@ -22,4 +22,5 @@ var app = new EmberApp();
 // app.import('public/lib/isotope/isotope.js');
 app.import('bower_components/tablesorter/jquery.tablesorter.js');
 app.import('bower_components/isotope/isotope.js');
+
 module.exports = app.toTree();

@@ -1,13 +1,13 @@
 <header id="header" class="g_noSelect">
 	<div id="headerInner">
 		<div id="headerTitle">	
-			{{#if this.model.database.name }}
-				<span>{{this.model.database.name}} - {{this.model.table.name}}</span>
+			{{#if this.model.table.database.name }}
+				<span>{{this.model.table.database.name}} - {{this.model.table.name}}</span>
 			{{else}}
 				{{#if this.model.name}}
 					<span>{{this.model.name}}</span>
 				{{else}}
-					<span>Dewire DB</span>
+					<span>Bilbo DB</span>
 				{{/if}}
 			{{/if}}	
 		</div> 
@@ -17,6 +17,7 @@
 					<a {{ action "toggleMenu" }} class="headerMenuIcon" href="#" id="menu"></a>
 				</li>
 			</ul>
+			{{#if this.model.table.database }}
 				<ul class="headerIconList right clr">
 					<li class="headerIconListItem right">
 						<a href="#" id="structure" class="headerMenuIcon"></a>
@@ -28,7 +29,8 @@
 						<a {{action 'toggleSearch' }} href="#" id="search" class="headerMenuIcon left"></a>
 						<input {{action 'headerSearch' on='keyUp' }} type="search" id="searchInput" class="left" placeholder="Sök efter tabelldata..."/>
 					</li>					
-				</ul>
+				</ul>			  
+			{{/if}}
 		</div>
 	</div>
 </header>

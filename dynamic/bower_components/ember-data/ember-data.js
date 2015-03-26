@@ -1965,7 +1965,6 @@
     };
 
     ember$inflector$lib$system$inflector$$default.inflector = new ember$inflector$lib$system$inflector$$default(ember$inflector$lib$system$inflections$$default);
-
     /**
      *
      * If you have Ember Inflector (such as if Ember Data is present),

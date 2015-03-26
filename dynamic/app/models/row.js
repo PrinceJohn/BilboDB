@@ -1,8 +1,9 @@
 import DS from 'ember-data';
-// var attr = DS.attr;
+var attr = DS.attr;
 
 export default DS.Model.extend({
 
+	isMarked:		attr('boolean'),
 	rowcontents: 	DS.hasMany('rowcontent', {async: true} ),
 	table:			DS.belongsTo('table', {async: true} ) 
 
@@ -12,14 +13,16 @@ export default DS.Model.extend({
 
 		{
 			id: 1,
-			rowdatas: [1,2,3],
+			isMarked: true,
+			rowcontents: [1,2,3],
 			table: 2
 		},
 
 		{
 			id: 2,
-			rowDatas: [4, 5, 6],
-			table: 3
+			isMarked: false,
+			rowcontents: [4, 5, 6],
+			table: 2
 		}
 
 	]

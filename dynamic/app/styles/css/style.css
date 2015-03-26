@@ -570,6 +570,7 @@ ul {
 			}
 			#asideSearchInput:focus {
 				outline-width: 0;
+				border-bottom-color: #eee;
 			}
 			#asideSearchInput::-webkit-input-placeholder {
 				color: #aaa;
@@ -648,7 +649,7 @@ ul {
 							-webkit-transition: -webkit-transform 0.2s ease;
 							-webkit-transform: rotate( 0deg );
 						}
-						.asideList.expanded .container .arrow .inner, .container.active .arrow .inner {
+						.asideList.expanded .container .arrow .inner {
 							-webkit-transform: rotate( 90deg );
 						}
 
@@ -886,10 +887,10 @@ ul {
 		.tableContainer .defaultTable .tableRow {
 			border-bottom: 1px solid #aaa;
 		}
-		.tableContainer .defaultTable .tableRow.even {
+		.tableContainer .defaultTable .tableRow:nth-child(odd){
 			background: #fff;
 		}
-		.tableContainer .defaultTable .tableRow.odd {
+		.tableContainer .defaultTable .tableRow:nth-child(even) {
 			background: #eee;
 		}
 		.tableContainer .defaultTable .tableRow:hover, .tableContainer .defaultTable .tableRow.active {

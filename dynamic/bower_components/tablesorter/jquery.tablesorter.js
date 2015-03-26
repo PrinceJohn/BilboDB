@@ -712,8 +712,19 @@
                     // apply event handling to headers
                     // this is to big, perhaps break it out?
                     $headers.click(
-
                     function (e) {
+
+                        //!!!
+                        // Modification to fix arrows
+                        if( $(this).hasClass('active') ) {
+                            $(this).toggleClass('up');
+                        }
+
+                        $(this).addClass('active');
+                        $(this).siblings().removeClass('active').removeClass('up');
+                        //!!!
+
+
                         var totalRows = ($this[0].tBodies[0] && $this[0].tBodies[0].rows.length) || 0;
                         if (!this.sortDisabled && totalRows > 0) {
                             // Only call sortStart if sorting is
