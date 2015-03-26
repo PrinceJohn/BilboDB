@@ -8,12 +8,12 @@ export default Ember.View.extend({
 
 		var thisEl = this.element;
 
-		if( $(thisEl).hasClass('active') ) {
-			$(thisEl).toggleClass('up');
+		if( Ember.$(thisEl).hasClass('active') ) {
+			Ember.$(thisEl).toggleClass('up');
 		}
 
-		$(thisEl).addClass('active');
-		$(thisEl).siblings().removeClass('active').removeClass('up');
+		Ember.$(thisEl).addClass('active');
+		Ember.$(thisEl).siblings().removeClass('active').removeClass('up');
 	
 	}
 });
