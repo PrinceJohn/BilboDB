@@ -4,23 +4,26 @@ export default Ember.View.extend({
 
 	didInsertElement: function() {
 		this.setTableSorter();
+		this.checkMarkedRows();
 	},
 
-	willInsertElement: function() {
-
-	},
-
-	willClearRender: function() {
+	willDestroyElement: function() {
+		Ember.$('#headerBorder').removeClass('active');
 	},
 
 	modelChanged: function() {
 		//Makes didInsertElement trigger again
-		this.rerender();
 	}.observes('controller.model'),
 
 	setTableSorter: function() {
 		Ember.$('.defaultTable').tablesorter({
 		});
+	},
+
+	checkMarkedRows: function() {
+		Ember.$('#actionBar').addClass('active');
+		Ember.$('#headerBorder').addClass('active');
+		Ember.$('#contentWrapper').addClass('morePadding');
 	}
 
 });

@@ -1,14 +1,15 @@
 {{render "header" this.model}}
+<div id="headerBorder"></div>
 <div id="actionBar" class="clr g_noSelect">
-	<span id="infoText" class="left"><strong id="numberOfRows">1</strong> rad markerad i <strong id="tableNames">Users</strong></span>
+	<span id="infoText" class="left"><strong id="numberOfRows">{{markedRows}}</strong> {{inflection}} <strong id="tableNames"></strong></span>
 	<a class="actionContainer left">
-		<div class="inner clr">
+		<div {{action 'addRow'}} class="inner clr">
 			<span class="actionIcon add left"></span>
 			<span class="actionText left">Lägg till</span>
 		</div>
 	</a>				
 	<a class="actionContainer left">
-		<div class="inner clr">
+		<div {{action 'removeRow'}} class="inner clr">
 			<span class="actionIcon delete left"></span>
 			<span class="actionText left">Ta bort</span>
 		</div>
@@ -17,8 +18,8 @@
 <section id="contentWrapper">
 	<div id="contentInnerWrapper">
 		<div id="tableWrapper" class="g_noSelect">
-			{{#each table in model.table.relatedTables}}
-				<div class="tableContainer Users Files Teams UserPermissions">
+			{{#each table in combinedTables }}
+				<div class="tableContainer">
 					<div class="tableTitle">
 						<div class="titleDeco"></div>
 						<span class="inner g_txtToUpper">{{table.name}}</span>
@@ -29,33 +30,44 @@
 								<th class="tableHeadCol">
 									{{input type="checkbox" checked=markRow}}
 								</th>
-								{{#each column in model.table.columns }}
-									{{#view 'tablecolumn'}}
+								{{#each column in table.columns }}
+									<th class="tableHeadCol" {{action 'sortBy' column.id }} {{bind-attr column-id=column.id}} >
 										<div class="text">
 											<span>{{column.name}}</span>
 										</div>
 										<div class="iconContainer">
 											<span class="arrowSort"></span>
 										</div>
-									{{/view}}
+									</th>
 								{{/each}}
 							</tr>
 						</thead>
 						<tbody class="tableBody">
-							{{#each row in model.table.rows itemController=rowscontroller }}
+							{{#each row in table.rows }}
 								  <tr {{ bind-attr class="row.isMarked:active :tableRow" }}>
 								  	<td class="tableCol">
-										{{input type="checkbox" checked=row.isMarked action='hej' }}
+										{{input type="checkbox" class="rowCheckBox" checked=row.isMarked }}
 									</td>
 									{{#each rowd in row.rowcontents }}
-										<td class="tableCol">
-											<span class="tableData">{{rowd.val}}</span>
-										</td>
+										{{#if rowd.isEditing}}
+											{{data-textarea value=rowd.val focus-out="acceptEdit" }}							  
+										{{else}}
+											<td class="tableCol">
+												<span {{action 'editTableData' rowd.id }} class="tableData">{{rowd.val}}</span>
+											</td>
+										{{/if}}										
 									{{/each}}
 								</tr>	
 							{{/each}}
 						</tbody>
 					</table>
+					{{#each rowd in sortedRows }}
+						{{#if rowd.isEditing}}
+							{{data-textarea value=rowd.val focus-out="acceptEdit" }}							  
+						{{else}}
+							<span style="color: #000;">{{rowd.val}}</span>
+						{{/if}}										
+					{{/each}}
 				</div>
 			{{/each}}
 		</div>

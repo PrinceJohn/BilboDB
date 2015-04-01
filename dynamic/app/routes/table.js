@@ -32,6 +32,14 @@ export default Ember.Route.extend({
 		});
 	},
 
+	setupController: function( controller, modelHash ) {
+		controller.set('model', modelHash );
+		controller.set( 'table', modelHash.table );
+		controller.set( 'column', modelHash.column );
+		controller.set( 'row', modelHash.row );
+		controller.set( 'rowcontent', modelHash.rowcontent );
+	},
+
 	afterModel: function() {
 	}
 

@@ -8,7 +8,8 @@ export default DS.Model.extend({
 	relatedTables: 	DS.hasMany('table', {async: true }),
 	database:		DS.belongsTo( 'database', { async: true }),
 	columns:		DS.hasMany('column', {async: true }),
-	rows:			DS.hasMany('row', { async: true })
+	rows:			DS.hasMany('row', { async: true }),
+	sortBy:			attr('number')
 
 }).reopenClass({
 
@@ -17,16 +18,19 @@ export default DS.Model.extend({
 			id: 			1,
 			name: 			'Teams',
 			noOfChanges: 	1,
-			database: 1
+			database: 		1,
+			sortBy:			1
 		},
 
 		{
 			id: 			2,
 			name: 			'Users',
 			noOfChanges: 	null,
-			relatedTables: 	[3],
-			database: 2,
-			column:			[1,2,3]
+			relatedTables: 	[3, 1],
+			database: 		2,
+			column:			[1,2,3],
+			sortBy:			1
+
 		},
 
 		{
@@ -34,7 +38,8 @@ export default DS.Model.extend({
 			name: 			'Files',
 			noOfChanges: 	14,
 			relatedTables: [2],
-			database: 2
+			database: 		2,
+			sortBy:			1
 			
 		}
 

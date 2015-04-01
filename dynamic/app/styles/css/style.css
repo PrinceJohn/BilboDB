@@ -223,7 +223,7 @@ ul {
 	position: fixed;
 	top: 0;
 	left: 0;
-	z-index: 6;
+	z-index: 7;
 
 	box-sizing: border-box;
 }
@@ -340,7 +340,7 @@ ul {
 	position: absolute;
 	top: 0;
 	left: 0;
-	z-index: 3;
+	z-index: 6;
 	background: #fff;
 	padding: 10px 14px;
 
@@ -348,11 +348,15 @@ ul {
 	border-color: #e5e5e5 #dbdbdb #d2d2d2;*/
 	-webkit-box-shadow: 0 2px 5px 0 rgba(0,0,0,0.26);
 	box-sizing: border-box;
+	-webkit-transform: translate3d(0,0,0);
 
-	-webkit-transition: top 0.2s ease;
+	-webkit-transition: transform 0.2s ease;
 }
 #actionBar.active {
-	top: 48px;
+	-webkit-transform: translate3d( 0, 48px, 0 );
+}
+#innerWrapper.slide #actionBar.active {
+	-webkit-transform: translate3d(320px,48px,0);
 }
 
 	#infoText {

@@ -5,8 +5,8 @@ var attr = DS.attr;
 export default DS.Model.extend({
 
 	val: attr('string'),
-	row: DS.belongsTo('row', {async: true })
-
+	row: DS.belongsTo('row', {async: true }),
+	isEditing: attr('boolean', {defaultValue: false})
 
 }).reopenClass({
 
@@ -33,7 +33,7 @@ export default DS.Model.extend({
 		{
 
 			id: 3,
-			val: 'Knugen',
+			val: 'Carl-XIV',
 			row: 1
 
 		},
@@ -50,7 +50,7 @@ export default DS.Model.extend({
 		{
 
 			id: 5,
-			val: 'Kalle B',
+			val: 'Astrid Lindgren',
 			row: 2
 
 		},
@@ -58,8 +58,22 @@ export default DS.Model.extend({
 		{
 
 			id: 6,
-			val: 'Knugen-kungen',
+			val: 'Karlsson på taket',
 			row: 2
+
+		},		
+
+		{
+
+			id: 7,
+			val: 'Emil i Lönneberga',
+			row: 3
+
+		},		{
+
+			id: 8,
+			val: 'Pippi Långstrump',
+			row: 3
 
 		}
 
