@@ -5,7 +5,7 @@ var attr = DS.attr;
 export default DS.Model.extend({
 
 	name: 		attr('string'),
-	dataType: 	attr('string'),
+	attribute: 	attr('string'),
 	table:		DS.belongsTo('table', {async: true})
 
 }).reopenClass({
@@ -15,14 +15,14 @@ export default DS.Model.extend({
 		{
 			id: 1,
 			name: 'id',
-			dataType: 'int',
+			attribute: 'int',
 			table: 2
 		},
 
 		{
 			id: 2,
 			name: 'Username',
-			dataType: 'string',
+			attribute: 'string',
 			table: 2
 
 		},
@@ -30,7 +30,7 @@ export default DS.Model.extend({
 		{
 			id: 3,
 			name: 'Password',
-			dataType: 'string',
+			attribute: 'string',
 			table: 2
 
 		},
@@ -38,8 +38,14 @@ export default DS.Model.extend({
 		{
 			id: 4,
 			name: 'id',
-			dataType: 'int',
+			attribute: 'int',
 			table: 3
+		},
+
+		{
+			id: 5,
+			name: 'Filename',
+			attribute: 'string'
 		}
 
 	]

@@ -11,7 +11,7 @@ Router.map(function() {
         this.resource('database', { path: '/:database/:database_id' }, function() {
             this.resource('table', { path: '/:table/:id'}, function() {
                 
-            } );
+            });
         });
     });
 

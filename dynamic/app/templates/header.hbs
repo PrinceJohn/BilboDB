@@ -20,10 +20,10 @@
 			{{#if this.model.table.database }}
 				<ul class="headerIconList right clr">
 					<li class="headerIconListItem right">
-						<a href="#" id="structure" class="headerMenuIcon"></a>
+						<a {{action 'toggleStructure'}} href="#" id="structure" class="headerMenuIcon"></a>
 					</li>							
 					<li class="headerIconListItem right">
-						<a href="#" id="chain" class="headerMenuIcon"></a>
+						<a {{action 'toggleChain'}} href="#" id="chain" class="headerMenuIcon"></a>
 					</li>
 					<li class="headerIconListItem right">
 						<a {{action 'toggleSearch' }} href="#" id="search" class="headerMenuIcon left"></a>

@@ -365,7 +365,7 @@ ul {
 	}
 
 	.actionContainer {
-		padding-left: 14px;
+		padding: 0 7px;
 		position: relative;
 		display: block; 
 	}
@@ -462,7 +462,7 @@ ul {
 		}
 		.dialogInput:nth-child(2) {
 			width: 111px;
-			margin-left: 11px;
+			margin-left: 7px;
 		}
 		.dialogInput::-webkit-input-placeholder {
 			font: 12px 'proxima_novalight_italic';
@@ -777,7 +777,10 @@ ul {
 	box-sizing: border-box;
 }
 .tableContainer:hover {
-	border: 1px solid #0099cc;
+	border-color: #33b5e5;
+}
+.tableContainer.marked {
+	border-color: #0099cc;
 }
 
 	.tableContainer .tableTitle {

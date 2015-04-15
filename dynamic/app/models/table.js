@@ -9,7 +9,8 @@ export default DS.Model.extend({
 	database:		DS.belongsTo( 'database', { async: true }),
 	columns:		DS.hasMany('column', {async: true }),
 	rows:			DS.hasMany('row', { async: true }),
-	sortBy:			attr('number')
+	sortBy:			attr('number'),
+	sortAscending:	attr('boolean', {defaultValue: false} )
 
 }).reopenClass({
 
@@ -28,7 +29,7 @@ export default DS.Model.extend({
 			noOfChanges: 	null,
 			relatedTables: 	[3, 1],
 			database: 		2,
-			column:			[1,2,3],
+			columns:		[1,2,3],
 			sortBy:			1
 
 		},
@@ -39,7 +40,8 @@ export default DS.Model.extend({
 			noOfChanges: 	14,
 			relatedTables: [2],
 			database: 		2,
-			sortBy:			1
+			sortBy:			1,
+			columns:		[4,5]
 			
 		}
 

@@ -16,8 +16,8 @@ export default Ember.View.extend({
 	}.observes('controller.model'),
 
 	setTableSorter: function() {
-		Ember.$('.defaultTable').tablesorter({
-		});
+		// Ember.$('.defaultTable').tablesorter({
+		// });
 	},
 
 	checkMarkedRows: function() {
