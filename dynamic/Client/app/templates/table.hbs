@@ -1,0 +1,96 @@
+{{render "header" this.model}}
+<div id="headerBorder"></div>
+<div id="actionBar" class="clr g_noSelect">
+	<span id="infoText" class="left">
+		{{#if markedTable}}
+			<span class="left"><strong>{{markedTable}}</strong> markerad</span>
+			<a class="actionContainer left">
+				<div {{action 'addRow' markedTableId}} class="inner clr">
+					<span class="actionIcon add left"></span>
+					<span class="actionText left">Lägg till rad</span>
+				</div>
+			</a>
+		{{else}}
+			Markera en tabelltitel för att lägga till rader	
+		{{/if}}
+		<strong id="numberOfRows">
+			{{markedRows}}
+		</strong> 
+		{{inflection}} 
+	</span>			
+	<a class="actionContainer left">
+		<div {{action 'removeRow'}} class="inner clr">
+			<span class="actionIcon delete left"></span>
+			<span class="actionText left">Ta bort rad</span>
+		</div>
+	</a>
+	<span>
+		<span id="selectText" class="left">Antal rader: </span>
+		{{view 'select' content=rowsLimit selection=selectedRowLimit class="left" }}
+	</span>
+</div>
+<section id="contentWrapper">
+	<div id="contentInnerWrapper">
+		<div id="tableWrapper" class="g_noSelect">
+			{{#each table in combinedTables itemController=controller.itemController }}
+				<div class="tableContainer" {{bind-attr name="table.name"}}>
+					<div class="tableTitle" {{ action "markTable" table.model.name table.model.id }}>
+						<div class="titleDeco"></div>
+						<span class="inner g_txtToUpper">{{table.model.name}}</span>
+					</div>
+					<table class="defaultTable">
+						<thead class="tableHead">
+							<tr class="tableRowHeader">
+								{{#if showStructure}}
+								{{else}}
+									<th class="tableHeadCol">
+										{{table-checkbox name=table.id controller=controller }}
+									</th>
+								{{/if}}
+								{{#each column in table.model.columns }}
+									<th class="tableHeadCol" {{action 'sortBy' column.id }} {{bind-attr column-id=column.id}} >
+										<div class="text">
+											<span>{{column.name}}</span>
+										</div>
+										<div class="iconContainer">
+											<span class="arrowSort"></span>
+										</div>
+									</th>
+								{{/each}}
+							</tr>
+						</thead>
+						<tbody class="tableBody">
+							{{#if showStructure}}
+								<tr class="tableRow">
+									{{#each columnAttribute in table.model.columns}}
+										<td class="tableCol">
+											{{attribute-select controller=controller content=columnAttributes selection=columnAttribute.attribute }}
+										</td>
+									{{/each}}
+								</tr>
+							  
+							{{else}}
+								{{#each row in table.sortedRows }}
+									<tr {{ bind-attr class="row.isMarked:active :tableRow" }}>
+									  	<td class="tableCol">
+											{{input type="checkbox" class="rowCheckBox" checked=row.isMarked }}
+										</td>
+										{{#each rowd in row.rowcontents }}
+											{{#if rowd.isEditing}}
+												{{ data-textarea value=rowd.val focus-out="acceptEdit" }}							  
+											{{else}}
+												<td class="tableCol">
+													<span {{action 'editTableData' rowd.id }} class="tableData">{{rowd.val}}</span>
+												</td>
+											{{/if}}										
+										{{/each}}
+									</tr>	
+								{{/each}}
+							{{/if}}
+						</tbody>
+					</table>
+				</div>
+			{{/each}}
+		</div>
+	</div>
+</section>

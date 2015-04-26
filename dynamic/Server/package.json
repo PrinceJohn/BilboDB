@@ -1,0 +1,24 @@
+{
+  "name": "server",
+  "version": "0.0.0",
+  "description": "Small description for dynamic goes here",
+  "private": true,
+  "scripts": {
+    "start": "node app.js"
+  },
+  "engines": {
+    "node": ">= 0.10.0"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {},
+  "dependencies": {
+    "epilogue": "0.5.1",
+    "express": "^4.12.3",
+    "mysql": "^2.6.2",
+    "restify": "3.0.2",
+    "sequelize": "^2.0.5",
+    "sequelize-auto": "0.0.7",
+    "sequelize-import": "^1.2.1"
+  }
+}
