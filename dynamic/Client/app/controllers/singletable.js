@@ -5,13 +5,17 @@ export default Ember.Controller.extend({
 	sortedRows: function() {
 
 		var columnId = this.model.get('sortBy'),
-			columnIndex;
+			columnIndex,
+			splitId;
+
 		this.model.get('columns').forEach( function( item, index ) {
+			splitId = (item.id).split('-')[3];
+
 			if (!columnId &&index===0) {
-				columnId = item.id;
+				columnId = splitId;
 			}
 
-			 if( item.id === columnId ) {
+			 if( splitId === columnId ) {
 			 	columnIndex = index;
 			 	return;
 			 }
@@ -19,14 +23,14 @@ export default Ember.Controller.extend({
 
 		var sorted = [];
 
-		//console.log( this.get('limiRows') );
-
 		this.model.get('rows').slice(0, this.get('target').get('selectedRowLimit') ).forEach( function( item ) {
 			sorted.push( item );
 		});
 
 		sorted.sort( function( a, b ) {
+
 			var aData, bData;
+
 			a.get('rowcontents').forEach(function(rowcontent, i) {
 				if (columnIndex === i) {
 					aData = rowcontent;
@@ -34,6 +38,7 @@ export default Ember.Controller.extend({
 				}
 
 			});
+
 			b.get('rowcontents').forEach(function(rowcontent, i) {
 				if (columnIndex === i) {
 					bData = rowcontent;
@@ -42,10 +47,12 @@ export default Ember.Controller.extend({
 
 			});
 
-			if(aData.get('val') < bData.get('val') ) { return -1; }
-			if(aData.get('val') > bData.get('val') ) { return 1; }
-
-			return 0;
+			if( aData !== undefined || bData !== undefined ) {
+				if(aData.get('val') < bData.get('val') ) { return -1; }
+				if(aData.get('val') > bData.get('val') ) { return 1; }
+			} else {
+				return 0;
+			}
 
 			//var aData = a.get('rowcontents')[columnIndex].get('val');
 			//console.log(aData);
@@ -60,8 +67,10 @@ export default Ember.Controller.extend({
 
 		// Sort the table
 		sortBy: function(params) {
-			this.model.set('sortBy', params);
-			this.model.set('sortAscending', this.model.get('sortBy') === params ? !this.model.get('sortAscending') : this.model.get('sortAscending') );
+			var splitId = params.split('-')[3];
+
+			this.model.set('sortBy', splitId);
+			this.model.set('sortAscending', this.model.get('sortBy') === splitId ? !this.model.get('sortAscending') : this.model.get('sortAscending') );
 			
 			// this.set('sortProperties', ['id']);
 			// this.set('sortAscending', !this.get('sortAscending'));

@@ -50,17 +50,37 @@ export default Ember.Controller.extend({
 
 		//On blur editing table data
 		acceptEdit: function() {
-			this.get('this.rowcontent').save();
-			var edit = this.get( 'this.rowcontent' ).filterBy( 'isEditing', true );
+
+			var  test = this.get('table').get('rows'),
+				 rowcontent = [];
+			
+			test.forEach( function( row ) {
+				row.get('rowcontents').forEach( function( rowcontents ) {
+					if( rowcontents.get('isEditing') === true ) {
+						rowcontents.set('isEditing', false );
+						rowcontents.save();
+					}
+				});
+			});
+
 			Ember.$('.dataEdit').removeClass('.dataEdit');
 			
-			edit[0].set('isEditing', false );
 		},
 
 		// Start editing table data
 		editTableData: function( params ) {
-			var data = this.get( 'this.rowcontent' ).filterBy( 'id', params );
-			data[0].set('isEditing', true );
+
+			var  test = this.get('table').get('rows'),
+				 rowcontent = [];
+			
+			test.forEach( function( row ) {
+				row.get('rowcontents').forEach( function( rowcontents ) {
+					if( rowcontents.id === params ) {
+						rowcontents.set('isEditing', true );
+					}
+				});
+			});
+
 			Ember.$('.dataEdit').focus();
 		},
 

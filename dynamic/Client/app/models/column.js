@@ -4,9 +4,11 @@ var attr = DS.attr;
 
 export default DS.Model.extend({
 
-	name: 		attr('string'),
-	attribute: 	attr('string'),
-	table:		DS.belongsTo('table', {async: true})
+	name: 			attr('string'),
+	attribute: 		attr('string'),
+	table:			DS.belongsTo('table', { async: true }),
+	isPrimaryKey:	attr('boolean', { defaultValue: false }),
+	isForeignKey:	attr('boolean', { defaultValue: false })
 
 }).reopenClass({
 

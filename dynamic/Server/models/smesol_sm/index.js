@@ -18,13 +18,36 @@ var database = new Sequelize( databaseName, username, password, {
 
 // Import all models
 var models = [
-	// 'role',
-	// 'company'
+	'agent',
+	'appuser',
+	'appuser_role',
+	'appuser_serviceprovider',
+	'appuserrole',
+	'auto_attendant',
+	'cdg',
+	'company',
+	'endpoint',
+	'fnr_notification_receivers',
+	'fnrtype',
+	'function_number',
+	'job',
+	'prompt',
+	'prompt_fnrtype',
+	'prompt_promptcategory',
+	'promptcategory',
+	'property',
+	'role',
+	'schema_version',
+	'service_provider',
+	'serviceauthorization',
+	'user',
+	'user_identity',
+	'userrole'
 ];
 
-models.forEach(function(model) {
-	module.exports[model] = database.import( __dirname + '/' + model );
-});
+// models.forEach(function(model) {
+// 	module.exports[model] = database.import( __dirname + '/' + model );
+// });
 
 db = {};
 

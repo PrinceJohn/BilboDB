@@ -18,8 +18,7 @@ var dewiredb = new Sequelize( databaseName, username, password, {
 
 // Import all models
 var models = [
-	'database',
-	'table'
+	'database'
 ],
 
 db = {};
@@ -29,9 +28,9 @@ models.forEach(function(model) {
 	db[model] = dewiredb.import( __dirname + '/' + model );
 });
 
-Object.keys(db).forEach(function(modelName) {
-	if('associate' in db[modelName])
-		db[modelName].associate(db);
-});
+// Object.keys(db).forEach(function(modelName) {
+// 	if('associate' in db[modelName])
+// 		db[modelName].associate(db);
+// });
 
 module.exports.sequelize = dewiredb;

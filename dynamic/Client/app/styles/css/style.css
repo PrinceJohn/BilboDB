@@ -861,18 +861,20 @@ ul {
 				.tableContainer .tableHeadCol .text {
 					float: left;
 					margin-right: 3px;
+					text-decoration: underline dashed red;
+				}
+				.tableContainer .tableHeadCol .text.primaryKey {
+					border-bottom: 1px solid;
 				}
 				.tableContainer .tableHeadCol .text.foreignKey {
-					text-decoration: underline;
+					border-bottom: 1px solid;
+					border-bottom-style: dashed;
 				}
 
 
 				.tableContainer .tableHeadCol .iconContainer {
 					width: 7px;
 					height: 15px;
-					position: relative;
-					float: left;
-					/*display: none;*/
 				}
 				.tableContainer .tableHeadCol:hover .iconContainer {
 					display: block;
@@ -882,11 +884,9 @@ ul {
 						width: 7px;
 						height: 4px;
 						background: url( /img/icons/arrowSort.png ) no-repeat left center;
-						/*display: none;*/
 						visibility: hidden;
 						position: absolute;
-						top: 35%;
-						left: 0;
+						top: 45%;
 						-webkit-transform: rotate( 0 );
 					}
 					.tableContainer .tableHeadCol.up .arrowSort {
