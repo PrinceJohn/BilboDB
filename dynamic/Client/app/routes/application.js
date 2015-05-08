@@ -29,7 +29,6 @@ export default Ember.Route.extend({
 	},
 
 	model: function() {
-		console.log("Loading database model in application");
 		return this.store.find('database');
 	}
 });

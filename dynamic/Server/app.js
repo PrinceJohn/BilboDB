@@ -9,7 +9,7 @@ var	dewiredb 			= require('./models/dewiredb'),
 var server = restify.createServer();
 server.use(restify.queryParser());
 server.use(restify.bodyParser());
-server.listen('3009');
+server.listen('3001');
 
 // Credentials
 var databaseName = 'information_schema',
@@ -175,6 +175,9 @@ function getRow ( req, res, next ) {
 }
 
 function delRowcontent( req, res, next ) {
+	res.header("Access-Control-Allow-Origin", "*"); 
+	res.header("Access-Control-Allow-Headers", "X-Requested-With");
+
 	console.log( "delRowcontent" );
 	res.send(200);
 }

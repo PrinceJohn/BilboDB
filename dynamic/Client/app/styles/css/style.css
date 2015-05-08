@@ -684,6 +684,9 @@ ul {
 							display: inline-block;
 							background: url( /img/icons/table.png ) no-repeat;
 						}
+						.asideListItem .container .icon.table.active .inner {
+							background-image: url( /img/icons/tableActive.png );
+						}
 
 						.asideListItem .container .icon .inner  {
 							width: 14px;
@@ -730,6 +733,10 @@ ul {
 							padding-right: 28px;
 							display: block;
 							box-sizing: border-box;
+						}
+						.asideList .text .listItemName.active {
+							font-family: 'proxima_novasemibold';
+							color: #fff;
 						}
 
 						.asideList .text .listItemChanges {

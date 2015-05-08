@@ -10,7 +10,8 @@ export default DS.Model.extend({
 	columns:		DS.hasMany('column', {async: true }),
 	rows:			DS.hasMany('row', { async: true }),
 	sortBy:			attr('number'),
-	sortAscending:	attr('boolean', {defaultValue: false} )
+	sortAscending:	attr('boolean', {defaultValue: false} ),
+	isRelated:		attr('boolean', {defaultValue: false })
 
 }).reopenClass({
 

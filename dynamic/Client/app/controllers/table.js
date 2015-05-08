@@ -7,20 +7,63 @@ export default Ember.Controller.extend({
 	markedTableId: null,
 	linkTables: false,
 	showStructure: false,
+	filterValues: [],
 	itemController: 'singletable',
 	
 	// Controller values
 	columnAttributes: ['int', 'double', 'date', 'timestamp', 'string'],
 	rowsLimit: ['25', '50', '100', '250', '500' ],
 
+	// Function for getting all rows
+	combinedRows: function() {
+		console.log("Kombinera rader");
+
+		var combinedRows = [];
+
+		this.get('combinedTables').forEach( function(table) {
+			table.get('rows').forEach( function( row ) {
+				combinedRows.push( row );
+			});
+		});
+
+		console.log(combinedRows);
+
+		return combinedRows;
+	},
+
 	// Function for getting table and related tables
 	combinedTables: function() {
-		var table = this.table;
-		var	relatedTables = this.model.table.get('relatedTables').filterBy('name'),
-			combined = [];
+		var table = this.table,
+			relatedTables = table.get('relatedTables').filterBy('name'),
+			combined = [],
+			allTables = this.model.database.get('content')[0].get('table').get('content');
+
+		allTables.filterBy('isRelated', true).setEach('isRelated', false);
 
 		combined.pushObject(table);
 		combined.pushObjects(relatedTables);
+
+		relatedTables.forEach( function( relTable ) {
+			var foundDuplicate = false;
+
+			relTable.get('relatedTables').filterBy('name').forEach( function( rTable ) {
+				combined.forEach( function( com )  {
+					if( com == rTable ) {
+						foundDuplicate = true;
+					}
+				});
+
+				if( !foundDuplicate ) {
+					combined.pushObject( rTable );
+				}
+
+				foundDuplicate = false;
+			});
+		});
+
+		combined.forEach( function(com) {
+			com.set('isRelated', true);
+		});
 
 		return combined;
 	}.property('this.model.table.@each.relatedTables', 'this.model.table.@each'),
@@ -39,12 +82,44 @@ export default Ember.Controller.extend({
 
 	// Returns how many rows that are marked
 	markedRows: function() {
-		var rowModel = this.get('this.model.row');
-		var len = this.model.table.get('rows').filterBy('isMarked', true ).get('length');
+		var row 	= this.model.table.get('rows').filterBy('isMarked', true ),
+			indexes = [],
+			len 	= row.get('length'),
+			that 	= this;
+			
+		if( ( len === 1 ) && ( this.get('linkTables') ) ) {
+
+			// Find which indexes that are primary and foreign
+			var column = this.model.table.get('columns').filter( function( col ) {
+				if( col.get('isPrimaryKey') === true || col.get('isForeignKey') === true )
+					indexes.push( col.id.split('-')[3] );
+					return col;
+			});
+			row[0].get('rowcontents').forEach( function( rowcontent, index ) {
+				if( indexes.indexOf( String(index) ) > -1 ) {
+					that.get('filterValues').push( rowcontent.get('val') );
+				}
+			});
+
+			// this.get('combinedTables').forEach( function(tables) {
+			// 	tables.get('rows').filter( function( row ) {
+			// 		row.get('rowcontents').some( function(rowcontents) {
+			// 			if( filterValues.indexOf( rowcontents.get('val') ) > -1 ) {
+			// 				filteredRows.push(row);
+			// 				console.log( row );
+			// 				return row;
+			// 			}
+			// 		});
+			// 	});
+			// });
+
+		} else if ( len < 0 ) {
+			this.get('filterValues').length = 0;
+			console.log( this.get('filterValues') );
+		}
+
 		return len;
-	}.property('this.model.row.@each.isMarked'),
-
-
+	}.property('this.model.table.rows.@each.isMarked', 'this.model.table.relatedTables.@each.rows.@each.isMarked'),
 
 	actions: {
 
@@ -131,10 +206,9 @@ export default Ember.Controller.extend({
 
 		// Marks/unmarks all rows in the selected table
 		markRows: function( tableId, checked ) {
-
 			var tables = this.get('combinedTables'),
 				currentTable;
-			
+
 			tables.forEach( function(item) {
 				if( item.id === tableId ) {
 					currentTable = item;

@@ -46,11 +46,11 @@
 						<ul class="asideList">
 							{{#view 'tableitem'}}
 								{{#link-to 'table' database.name database.id table.name table.id  title=table.name class="container" }}
-									<div class="icon table left">
+									<div {{bind-attr class=":icon :table :left table.isRelated:active"}}>
 										<span class="inner"></span>
 									</div>
 									<div class="text">
-										<span class="listItemName" >{{table.name}}</span>
+										<span {{bind-attr class=":listItemName table.isRelated:active"}} >{{table.name}}</span>
 										{{#if table.noOfChanges}}
 										  <span class="listItemChanges">{{table.noOfChanges}}</span>
 										{{/if}}

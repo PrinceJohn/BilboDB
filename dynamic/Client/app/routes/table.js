@@ -25,6 +25,7 @@ export default Ember.Route.extend({
 		//return this.store.find("table", params.id);
 		return Ember.RSVP.hash({
 			table: 		this.store.find("table", params.id),
+			database: 	this.store.find("database")
 			// column: 	this.store.find("column"),
 			// row:		this.store.find("row"),
 			// rowcontent: this.store.find('rowcontent')
@@ -34,9 +35,7 @@ export default Ember.Route.extend({
 	setupController: function( controller, modelHash ) {
 		controller.set('model', modelHash );
 		controller.set( 'table', modelHash.table );
-		controller.set( 'column', modelHash.column );
-		controller.set( 'row', modelHash.row );
-		controller.set( 'rowcontent', modelHash.rowcontent );
+		controller.set( 'database', modelHash.database );
 	},
 
 	afterModel: function() {

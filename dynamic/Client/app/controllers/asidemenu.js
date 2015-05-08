@@ -13,9 +13,11 @@ export default Ember.Controller.extend({
 			tableRows.filter( ':not(:contains('+ this.searchFilter + '))' ).parent().parent().css('display', 'none');
 			tableRows.filter( ':contains('+ this.searchFilter + ')' ).parent().parent().css('display', 'block');
 		}
+
+		
+
 	}.observes( 'searchFilter'),
-
-
+	
 	actions: {
 		tableSearch: function() {
 			var input = Ember.$('#asideSearchInput').val();
