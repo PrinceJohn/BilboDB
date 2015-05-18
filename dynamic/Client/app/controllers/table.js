@@ -12,7 +12,7 @@ export default Ember.Controller.extend({
 	
 	// Controller values
 	columnAttributes: ['int', 'double', 'date', 'timestamp', 'string'],
-	rowsLimit: ['25', '50', '100', '250', '500' ],
+	rowsLimit: ['25', '1', '50', '100', '250', '500' ],
 
 	// Function for getting all rows
 	combinedRows: function() {
@@ -71,7 +71,7 @@ export default Ember.Controller.extend({
 	// Singular or plural words in actionbar
 	inflection: function () {
 		var markedRows = this.get('markedRows');
-		return markedRows === 1 ? 'rad markerad' : 'rader markerade';
+		return markedRows === 1 ? 'row marked' : 'rows marked';
 	}.property('markedRows'),
 
 	limitedRows: function() {

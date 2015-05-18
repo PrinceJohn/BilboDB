@@ -9,7 +9,7 @@ var	dewiredb 			= require('./models/dewiredb'),
 var server = restify.createServer();
 server.use(restify.queryParser());
 server.use(restify.bodyParser());
-server.listen('3001');
+server.listen('3043');
 
 // Credentials
 var databaseName = 'information_schema',
@@ -276,6 +276,8 @@ function getTable( req, res, next ) {
 	res.header("Access-Control-Allow-Origin", "*"); 
 	res.header("Access-Control-Allow-Headers", "X-Requested-With");
 	
+	console.log( req );
+
 	var params 			= (req.params.table_id).split('-'),
 		databaseName 	= params[0],
 		tableName 		= params[1],
@@ -347,6 +349,127 @@ function getTable( req, res, next ) {
 	});
 }
 
+function predictionTest( req, res, next ) {
+	res.header("Access-Control-Allow-Origin", "*"); 
+	res.header("Access-Control-Allow-Headers", "X-Requested-With");
+	
+	console.log( req.params );
+
+	information_schema.sequelize.query('SELECT TABLE_SCHEMA, TABLE_NAME, GROUP_CONCAT( COLUMN_NAME ) AS COLUMNS FROM COLUMNS WHERE TABLE_SCHEMA="'+ req.params.databaseName +'" GROUP BY TABLE_NAME').then( function(table) {
+		information_schema.sequelize.query( 'SELECT FOR_NAME AS relatedTable, REF_NAME AS "table" FROM INNODB_SYS_FOREIGN WHERE FOR_NAME LIKE "' + req.params.databaseName + '%"').then( function( correctRelations ) {
+			var tables 						= table[0],
+				predictedRelations 			= [],
+				relation 					= {},
+				columns 					= [],
+				allowedDistance 			= req.params.allowedDistance,
+				numberOfCorrectRelations 	= 0,
+				allowSubstring 				= false;
+
+			if( req.params.allowSubstring == 1 ) {
+				allowSubstring = true;
+			}
+
+
+			// Prepare the correct tables
+			for( var i = 0 ; i < correctRelations[0].length ; i++ ) {
+				correctRelations[0][i].relatedTable = correctRelations[0][i].relatedTable.split('/')[1].toLowerCase();
+				correctRelations[0][i].table = correctRelations[0][i].table.split('/')[1].toLowerCase();
+			}
+
+			// Current table name
+			for( var x = 0 ; x < tables.length ; x++ ) {
+				// All the other tables
+				for ( var y = 0 ; y < tables.length ; y++ ) {
+					// Do not compare the table name with itself
+					if( tables[x].TABLE_NAME === tables[y].TABLE_NAME )
+						continue;
+
+					columns = tables[y].COLUMNS.split(',');
+					// Search in every column of selected table
+					for( var z = 0 ; z < columns.length ; z++ ) {
+						var tableName = tables[x].TABLE_NAME;
+						//Check if it is a substring (if allowed)
+						if( ( columns[z].indexOf( tableName ) > -1 ) && allowSubstring ) {
+							if(  getLevenshteinDistance( tables[x].TABLE_NAME, columns[z] ) <= allowedDistance ) {
+								// If we find a suitable match, break and continue searching in the next table
+								console.log( tables[x].TABLE_NAME, tables[y].TABLE_NAME, columns[z] );
+								//console.log( columns[z].indexOf( tableName ) );
+								//console.log( getLevenshteinDistance( tables[x].TABLE_NAME, columns[z] ) );
+								relation["relatedTable"] = tables[y].TABLE_NAME.toLowerCase();
+								relation["table"] = tables[x].TABLE_NAME.toLowerCase();
+								//relation["ForeignKey"] = columns[z];
+								predictedRelations.push(relation);
+								relation = {};
+								break;
+							}
+						}
+						// Else check with only levenshtein
+						else if( ( getLevenshteinDistance( tables[x].TABLE_NAME, columns[z] ) <= allowedDistance ) && !allowSubstring ) {
+							// If we find a suitable match, break and continue searching in the next table
+							console.log( tables[x].TABLE_NAME, tables[y].TABLE_NAME, columns[z] );
+							//console.log( columns[z].indexOf( tableName ) );
+							//console.log( getLevenshteinDistance( tables[x].TABLE_NAME, columns[z] ) );
+							relation["relatedTable"] = tables[y].TABLE_NAME.toLowerCase();
+							relation["table"] = tables[x].TABLE_NAME.toLowerCase();
+							//relation["ForeignKey"] = columns[z];
+							predictedRelations.push(relation);
+							relation = {};
+							break;
+						}
+					}
+				}
+			}
+
+			var wrongPredictions 		= 0,
+				noMatchFound 			= true,
+				copyCorrectRelations 	= correctRelations;
+			
+			// See if corrections match
+			if( predictedRelations.length ) {
+				for( var i = 0 ; i < predictedRelations.length ; i++ ) {
+					for( var x = 0 ; x < correctRelations[0].length ; x++ ) {
+						//console.log("Comparing "+ JSON.stringify( predictedRelations[i] ) + " with " + JSON.stringify( correctRelations[0][x] ) );
+						if( JSON.stringify( predictedRelations[i] ) == JSON.stringify( correctRelations[0][x] ) ){
+							//correctRelations[0][x]["CorrectPrediction"] = true;
+							//copyCorrectRelations[0][x]["CorrectPrediction"] = true;
+							console.log("Found match for " + JSON.stringify( predictedRelations[i] ) + " " + JSON.stringify( correctRelations[0][x] ) );
+							numberOfCorrectRelations++;
+							noMatchFound = false;
+						}
+					}
+					// If we didn't find a match, that prediction was false
+					if( noMatchFound ) {
+						console.log("No match found for " + JSON.stringify( predictedRelations[i] ) );
+						wrongPredictions++;
+					}
+					noMatchFound = true;
+				}
+			} else {
+				predictedRelations.push('{"correctPredictions":"0%"}');
+			}
+
+			// // Calculate how many predictions that matched
+			// for( var i = 0 ; i < copyCorrectRelations[0].length ; i++ ) {
+			// 	if( copyCorrectRelations[0][i]["CorrectPrediction"] ) {
+			// 		numberOfCorrectRelations++;
+			// 	}
+			// }
+
+			console.log(correctRelations[0]);
+			console.log(predictedRelations);
+			console.log("No predictions: " + predictedRelations.length );
+			predictedRelations.push('{"numberOfPredictions":"'+predictedRelations.length+'"}');
+			predictedRelations.push('{"correct%":"'+numberOfCorrectRelations/correctRelations[0].length+'"}');
+			predictedRelations.push('{"correctPredictions":"'+numberOfCorrectRelations+'"}');
+			predictedRelations.push('{"numberOfRelations":"'+correctRelations[0].length+'"}');
+			predictedRelations.push('{"wrongPredictions":"'+wrongPredictions+'"}');
+
+			res.send( predictedRelations );
+		});
+	});
+
+}
+
 // Used to find object in object by string
 Object.byString = function(o, s) {
     s = s.replace(/\[(\w+)\]/g, '.$1'); // convert indexes to properties
@@ -370,6 +493,41 @@ Object.resolve = function(path, obj, safe) {
     }, obj || self)
 }
 
+// Compute the edit distance between the two given strings
+function getLevenshteinDistance(a, b) {
+  if(a.length === 0) return b.length; 
+  if(b.length === 0) return a.length; 
+ 
+  var matrix = [];
+ 
+  // increment along the first column of each row
+  var i;
+  for(i = 0; i <= b.length; i++){
+    matrix[i] = [i];
+  }
+ 
+  // increment each column in the first row
+  var j;
+  for(j = 0; j <= a.length; j++){
+    matrix[0][j] = j;
+  }
+ 
+  // Fill in the rest of the matrix
+  for(i = 1; i <= b.length; i++){
+    for(j = 1; j <= a.length; j++){
+      if(b.charAt(i-1) == a.charAt(j-1)){
+        matrix[i][j] = matrix[i-1][j-1];
+      } else {
+        matrix[i][j] = Math.min(matrix[i-1][j-1] + 1, // substitution
+                                Math.min(matrix[i][j-1] + 1, // insertion
+                                         matrix[i-1][j] + 1)); // deletion
+      }
+    }
+  }
+ 
+  return matrix[b.length][a.length];
+};
+
 //////////
 // Routes
 server.get( '/column/:table_id', getColumn);
@@ -380,6 +538,8 @@ server.del( 'rowcontent/:rowcontent_id', delRowcontent );
 server.get( 'rowcontent/:table_id', getRowcontent );
 server.put( 'rowcontent/:rowcontent_id', putRowcontent );
 server.get( '/table/:table_id', getTable );
+
+server.get( '/test/:databaseName/:allowedDistance/:allowSubstring', predictionTest );
 
 //////////////
 // Connection

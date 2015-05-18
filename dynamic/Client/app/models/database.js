@@ -10,13 +10,13 @@ export default DS.Model.extend({
 	FIXTURES: [
 		{
 			id: 1,
-			name: 'Dewire DB',
+			name: 'Example',
 			table: [1]
 		},
 
 		{
 			id: 2,
-			name: 'Telia',
+			name: 'Testdatabase',
 			table: [2,3]
 
 		}

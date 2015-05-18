@@ -21,9 +21,10 @@ export default Ember.Controller.extend({
 		if( ( marked > 0 ) ) {
 			// Find which indexes that are primary and foreign
 			var column = this.model.get('columns').filter( function( col ) {
-				if( col.get('isPrimaryKey') === true || col.get('isForeignKey') === true )
+				if( col.get('isPrimaryKey') === true || col.get('isForeignKey') === true ) {
 					indexes.push( col.id.split('-')[3] );
 					return col;
+				}
 			});
 			row[0].get('rowcontents').some( function( rowcontent, index ) {
 				if( indexes.indexOf( String(index) ) > -1 ) {
@@ -102,7 +103,7 @@ export default Ember.Controller.extend({
 
 		return this.model.get('sortAscending') ? sorted.reverse() : sorted ;
 
-	}.property('this.model.rows.@each', 'this.model.rows.@each.isMarked', 'this.model.sortBy', 'this.model.sortAscending', 'this.target.selectedRowLimit'),
+	}.property('this.model.rows.@each', 'this.model.rows.@each.isMarked', 'this.model.sortBy', 'this.model.sortAscending', 'this.target.selectedRowLimit', 'this.target.filterValues'),
 
 	actions: {
 

@@ -3,15 +3,15 @@
 <div id="actionBar" class="clr g_noSelect">
 	<span id="infoText" class="left">
 		{{#if markedTable}}
-			<span class="left"><strong>{{markedTable}}</strong> markerad</span>
+			<span class="left"><strong>{{markedTable}}</strong> marked</span>
 			<a class="actionContainer left">
 				<div {{action 'addRow' markedTableId}} class="inner clr">
 					<span class="actionIcon add left"></span>
-					<span class="actionText left">Lägg till rad</span>
+					<span class="actionText left">Add row</span>
 				</div>
 			</a>
 		{{else}}
-			Markera en tabelltitel för att lägga till rader	
+			To add rows, mark a table title	
 		{{/if}}
 		<strong id="numberOfRows">
 			{{markedRows}}
@@ -21,11 +21,11 @@
 	<a class="actionContainer left">
 		<div {{action 'removeRow'}} class="inner clr">
 			<span class="actionIcon delete left"></span>
-			<span class="actionText left">Ta bort rad</span>
+			<span class="actionText left">Remove row</span>
 		</div>
 	</a>
 	<span>
-		<span id="selectText" class="left">Antal rader: </span>
+		<span id="selectText" class="left">Number of rows: </span>
 		{{view 'select' content=rowsLimit selection=selectedRowLimit class="left" }}
 	</span>
 </div>
