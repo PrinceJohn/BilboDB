@@ -18,14 +18,15 @@ export default DS.Model.extend({
 	FIXTURES: [
 		{
 			id: 			1,
-			name: 			'Teams',
+			name: 			'User',
 			noOfChanges: 	1,
 			database: 		1,
+			columns:		[1,2,3]
 		},
 
 		{
 			id: 			2,
-			name: 			'Users',
+			name: 			'User',
 			noOfChanges: 	null,
 			relatedTables: 	[3],
 			database: 		2,
@@ -35,11 +36,11 @@ export default DS.Model.extend({
 
 		{
 			id: 			3,
-			name: 			'Company',
+			name: 			'File',
 			noOfChanges: 	14,
 			relatedTables: [2],
 			database: 		2,
-			columns:		[4,5]
+			columns:		[4,5,6]
 			
 		}
 

@@ -726,7 +726,7 @@ ul {
 					}
 
 						.asideList .text .listItemName {
-							overflow: hidden;
+							/*overflow: hidden; Bugg i Chrome? */
 							width: 100%;
 							text-overflow: ellipsis;
 							white-space: nowrap;

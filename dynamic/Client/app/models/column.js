@@ -16,16 +16,16 @@ export default DS.Model.extend({
 
 		{
 			id: 1,
-			name: 'id',
+			name: 'id (PK)',
 			attribute: 'int',
-			table: 2
+			table: 1
 		},
 
 		{
 			id: 2,
 			name: 'Username',
 			attribute: 'string',
-			table: 2
+			table: 1
 
 		},
 
@@ -33,19 +33,26 @@ export default DS.Model.extend({
 			id: 3,
 			name: 'Password',
 			attribute: 'string',
-			table: 2
+			table: 1
 
 		},
 
 		{
 			id: 4,
-			name: 'id',
+			name: 'id (PK)',
 			attribute: 'int',
 			table: 3
 		},
 
 		{
 			id: 5,
+			name: 'user_id (FK)',
+			attribute: 'int',
+			table: 3
+		},
+
+		{
+			id: 6,
 			name: 'Filename',
 			attribute: 'string'
 		}

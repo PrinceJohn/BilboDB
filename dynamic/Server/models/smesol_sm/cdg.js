@@ -6,10 +6,10 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.BIGINT,
       allowNull: false,
     },
-    cdgid: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
+    // cdgid: {
+    //   type: DataTypes.STRING,
+    //   allowNull: false,
+    // },
     noagent_overflowaction: {
       type: DataTypes.STRING,
       allowNull: true,

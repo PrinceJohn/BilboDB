@@ -18,7 +18,7 @@ export default Ember.Controller.extend({
 			filterValues 	= this.get('filterValues');
 
 		// If we have marked a row and "linked" the tables, filter them
-		if( ( marked > 0 ) ) {
+		if( ( marked > 0 ) && ( this.get('target').get('linkTables') ) ) {
 			// Find which indexes that are primary and foreign
 			var column = this.model.get('columns').filter( function( col ) {
 				if( col.get('isPrimaryKey') === true || col.get('isForeignKey') === true ) {

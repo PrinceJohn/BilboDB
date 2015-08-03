@@ -4,17 +4,18 @@ var	dewiredb 			= require('./models/dewiredb'),
     epilogue 			= require('epilogue'),
     information_schema 	= require('./models/information_schema'),
     smesol_sm			= require('./models/smesol_sm');
+    present 			= require('present');
 
 // Initialize server
 var server = restify.createServer();
 server.use(restify.queryParser());
 server.use(restify.bodyParser());
-server.listen('3043');
+server.listen('3020');
 
 // Credentials
-var databaseName = 'information_schema',
-	username = 'root',
-	password = '123';
+// var databaseName = 'information_schema',
+// 	username = 'root',
+// 	password = '123';
 
 //Connect
 // var information_schema = new information_schema( databaseName, username, password, {
@@ -30,7 +31,6 @@ var databaseName = 'information_schema',
 // var informationModels = require('sequelize-import')( __dirname+ '/models/' + databaseName , information_schema, { 
 //     exclude: ['index.js'] 
 // });
-
 
 // Restify routes
 function getColumn ( req, res, next ) {
@@ -355,116 +355,171 @@ function predictionTest( req, res, next ) {
 	
 	console.log( req.params );
 
-	information_schema.sequelize.query('SELECT TABLE_SCHEMA, TABLE_NAME, GROUP_CONCAT( COLUMN_NAME ) AS COLUMNS FROM COLUMNS WHERE TABLE_SCHEMA="'+ req.params.databaseName +'" GROUP BY TABLE_NAME').then( function(table) {
-		information_schema.sequelize.query( 'SELECT FOR_NAME AS relatedTable, REF_NAME AS "table" FROM INNODB_SYS_FOREIGN WHERE FOR_NAME LIKE "' + req.params.databaseName + '%"').then( function( correctRelations ) {
-			var tables 						= table[0],
-				predictedRelations 			= [],
-				relation 					= {},
-				columns 					= [],
-				allowedDistance 			= req.params.allowedDistance,
-				numberOfCorrectRelations 	= 0,
-				allowSubstring 				= false;
+	information_schema.sequelize.query('SELECT TABLE_SCHEMA, TABLE_NAME, GROUP_CONCAT( COLUMN_NAME ) AS COLUMNS FROM COLUMNS WHERE TABLE_SCHEMA="'+ req.params.databaseName +'" GROUP BY TABLE_NAME').then( function( table ) {
+		information_schema.sequelize.query('SELECT TABLE_SCHEMA, TABLE_NAME, COLUMN_NAME, DATA_TYPE, COLUMN_KEY FROM COLUMNS WHERE TABLE_SCHEMA="'+req.params.databaseName+'"').then( function( columnTypes ) {
+			information_schema.sequelize.query( 'SELECT FOR_NAME AS relatedTable, REF_NAME AS "table" FROM INNODB_SYS_FOREIGN WHERE FOR_NAME LIKE "' + req.params.databaseName + '%"').then( function( correctRelations ) {
+				var tables 						= table[0],
+					predictedRelations 			= [],
+					relation 					= {},
+					columns 					= [],
+					allowedDistance 			= req.params.allowedDistance,
+					numberOfCorrectRelations 	= 0,
+					allowSubstring 				= false,
+					dataType1					= null,
+					dataType2					= null;
 
-			if( req.params.allowSubstring == 1 ) {
-				allowSubstring = true;
-			}
+				if( req.params.allowSubstring == 1 ) {
+					allowSubstring = true;
+				}
 
 
-			// Prepare the correct tables
-			for( var i = 0 ; i < correctRelations[0].length ; i++ ) {
-				correctRelations[0][i].relatedTable = correctRelations[0][i].relatedTable.split('/')[1].toLowerCase();
-				correctRelations[0][i].table = correctRelations[0][i].table.split('/')[1].toLowerCase();
-			}
+				// Prepare the correct tables
+				for( var i = 0 ; i < correctRelations[0].length ; i++ ) {
+					correctRelations[0][i].relatedTable = correctRelations[0][i].relatedTable.split('/')[1].toLowerCase();
+					correctRelations[0][i].table = correctRelations[0][i].table.split('/')[1].toLowerCase();
+				}
+				
+				// Measure the time taken to execute
+				var t0 = present(), t1 = present(), totalt0 = 0, totalt1 = 0;
 
-			// Current table name
-			for( var x = 0 ; x < tables.length ; x++ ) {
-				// All the other tables
-				for ( var y = 0 ; y < tables.length ; y++ ) {
-					// Do not compare the table name with itself
-					if( tables[x].TABLE_NAME === tables[y].TABLE_NAME )
-						continue;
+				for( var q =  0 ; q < 10000 ; q++ ) {
+				t0 = present();
+				console.log("t0: ", t0);
 
-					columns = tables[y].COLUMNS.split(',');
-					// Search in every column of selected table
-					for( var z = 0 ; z < columns.length ; z++ ) {
-						var tableName = tables[x].TABLE_NAME;
-						//Check if it is a substring (if allowed)
-						if( ( columns[z].indexOf( tableName ) > -1 ) && allowSubstring ) {
-							if(  getLevenshteinDistance( tables[x].TABLE_NAME, columns[z] ) <= allowedDistance ) {
-								// If we find a suitable match, break and continue searching in the next table
-								console.log( tables[x].TABLE_NAME, tables[y].TABLE_NAME, columns[z] );
-								//console.log( columns[z].indexOf( tableName ) );
-								//console.log( getLevenshteinDistance( tables[x].TABLE_NAME, columns[z] ) );
-								relation["relatedTable"] = tables[y].TABLE_NAME.toLowerCase();
-								relation["table"] = tables[x].TABLE_NAME.toLowerCase();
-								//relation["ForeignKey"] = columns[z];
-								predictedRelations.push(relation);
-								relation = {};
+				// Current table name
+				for( var x = 0 ; x < tables.length ; x++ ) {
+					// All the other tables
+					for ( var y = 0 ; y < tables.length ; y++ ) {
+						// Do not compare the table name with itself
+						if( tables[x].TABLE_NAME === tables[y].TABLE_NAME )
+							continue;
+
+						columns = tables[y].COLUMNS.split(',');
+						// Search in every column of selected table
+						for( var z = 0 ; z < columns.length ; z++ ) {
+							var tableName = tables[x].TABLE_NAME;
+							//Check if it is a substring (if allowed)
+							if( ( columns[z].indexOf( tableName ) > -1 ) && allowSubstring ) {
+								// Is the match within the allowed cost?
+								if(  getLevenshteinDistance( tables[x].TABLE_NAME, columns[z] ) <= allowedDistance ) {
+									
+									// Check what datatype the primary key is
+									for( var i = 0 ; i < columnTypes[0].length ; i++ ) {
+										if( ( tables[x].TABLE_NAME == columnTypes[0][i].TABLE_NAME ) && ( columnTypes[0][i].COLUMN_KEY == "PRI" ) ) {
+											//console.log("Primary key datatype is " + columnTypes[0][i].DATA_TYPE );
+											dataType1 = columnTypes[0][i].DATA_TYPE;
+										}
+									}
+
+									// Check what datatype the related column is
+									for( var i = 0 ; i < columnTypes[0].length ; i++ ) {
+										if( ( tables[y].TABLE_NAME == columnTypes[0][i].TABLE_NAME ) && ( columns[z] == columnTypes[0][i].COLUMN_NAME ) ) {
+											//console.log("Foreign key datatypes is " + columnTypes[0][i].DATA_TYPE );
+											dataType2 = columnTypes[0][i].DATA_TYPE
+										}
+									}
+
+									if( dataType1 == dataType2 ) {
+										// If we find a suitable match, break and continue searching in the next table
+										//console.log( tables[x].TABLE_NAME, tables[y].TABLE_NAME, columns[z] );
+										//console.log( columns[z].indexOf( tableName ) );
+										//console.log( getLevenshteinDistance( tables[x].TABLE_NAME, columns[z] ) );
+										relation["relatedTable"] = tables[y].TABLE_NAME.toLowerCase();
+										relation["table"] = tables[x].TABLE_NAME.toLowerCase();
+										//relation["ForeignKey"] = columns[z];
+										predictedRelations.push(relation);
+										relation = {};
+										break;
+									}
+								}
+							}
+							// Else check with only levenshtein
+							else if( ( getLevenshteinDistance( tables[x].TABLE_NAME, columns[z] ) <= allowedDistance ) && !allowSubstring ) {
+								// Check what datatype the primary key is
+								for( var i = 0 ; i < columnTypes[0].length ; i++ ) {
+									if( ( tables[x].TABLE_NAME == columnTypes[0][i].TABLE_NAME ) && ( columnTypes[0][i].COLUMN_KEY == "PRI" ) ) {
+										//console.log("Primary key datatype is " + columnTypes[0][i].DATA_TYPE );
+										dataType1 = columnTypes[0][i].DATA_TYPE;
+									}
+								}
+
+								// Check what datatype the related column is
+								for( var i = 0 ; i < columnTypes[0].length ; i++ ) {
+									if( ( tables[y].TABLE_NAME == columnTypes[0][i].TABLE_NAME ) && ( columns[z] == columnTypes[0][i].COLUMN_NAME ) ) {
+										//console.log("Foreign key datatypes is " + columnTypes[0][i].DATA_TYPE );
+										dataType2 = columnTypes[0][i].DATA_TYPE
+									}
+								}
+
+								if( dataType1 == dataType2 ) {
+									// If we find a suitable match, break and continue searching in the next table
+									//console.log( tables[x].TABLE_NAME, tables[y].TABLE_NAME, columns[z] );
+									//console.log( columns[z].indexOf( tableName ) );
+									//console.log( getLevenshteinDistance( tables[x].TABLE_NAME, columns[z] ) );
+									relation["relatedTable"] = tables[y].TABLE_NAME.toLowerCase();
+									relation["table"] = tables[x].TABLE_NAME.toLowerCase();
+									//relation["ForeignKey"] = columns[z];
+									predictedRelations.push(relation);
+									relation = {};
+									break;
+								}
+							}
+						}
+					}
+				}
+				t1 = present();
+				console.log("t1: ", t1);
+				console.log("Difference: ", t1 - t0 );
+				totalt0 += (t1 - t0)
+				console.log("Totalt0: ", totalt0 );
+				}//Time for
+
+				//console.log( totalt1, totalt0 );
+				var totalTime = totalt0/10000;
+				console.log("Total time: ", totalTime);
+
+				var wrongPredictions 		= 0,
+					noMatchFound 			= true,
+					copyCorrectRelations 	= correctRelations;
+				
+				// See if corrections match
+				if( predictedRelations.length ) {
+					for( var i = 0 ; i < predictedRelations.length ; i++ ) {
+						for( var x = 0 ; x < correctRelations[0].length ; x++ ) {
+							//console.log("Comparing "+ JSON.stringify( predictedRelations[i] ) + " with " + JSON.stringify( correctRelations[0][x] ) );
+							if( JSON.stringify( predictedRelations[i] ) == JSON.stringify( correctRelations[0][x] ) ){
+								//correctRelations[0][x]["CorrectPrediction"] = true;
+								//copyCorrectRelations[0][x]["CorrectPrediction"] = true;
+								//console.log("Found match for " + JSON.stringify( predictedRelations[i] ) + " " + JSON.stringify( correctRelations[0][x] ) );
+								numberOfCorrectRelations++;
+								noMatchFound = false;
 								break;
 							}
 						}
-						// Else check with only levenshtein
-						else if( ( getLevenshteinDistance( tables[x].TABLE_NAME, columns[z] ) <= allowedDistance ) && !allowSubstring ) {
-							// If we find a suitable match, break and continue searching in the next table
-							console.log( tables[x].TABLE_NAME, tables[y].TABLE_NAME, columns[z] );
-							//console.log( columns[z].indexOf( tableName ) );
-							//console.log( getLevenshteinDistance( tables[x].TABLE_NAME, columns[z] ) );
-							relation["relatedTable"] = tables[y].TABLE_NAME.toLowerCase();
-							relation["table"] = tables[x].TABLE_NAME.toLowerCase();
-							//relation["ForeignKey"] = columns[z];
-							predictedRelations.push(relation);
-							relation = {};
-							break;
+						// If we didn't find a match, that prediction was false
+						if( noMatchFound ) {
+							//console.log("No match found for " + JSON.stringify( predictedRelations[i] ) );
+							wrongPredictions++;
 						}
+						noMatchFound = true;
 					}
+				} else {
+					predictedRelations.push('{"correctPredictions":"0%"}');
 				}
-			}
 
-			var wrongPredictions 		= 0,
-				noMatchFound 			= true,
-				copyCorrectRelations 	= correctRelations;
-			
-			// See if corrections match
-			if( predictedRelations.length ) {
-				for( var i = 0 ; i < predictedRelations.length ; i++ ) {
-					for( var x = 0 ; x < correctRelations[0].length ; x++ ) {
-						//console.log("Comparing "+ JSON.stringify( predictedRelations[i] ) + " with " + JSON.stringify( correctRelations[0][x] ) );
-						if( JSON.stringify( predictedRelations[i] ) == JSON.stringify( correctRelations[0][x] ) ){
-							//correctRelations[0][x]["CorrectPrediction"] = true;
-							//copyCorrectRelations[0][x]["CorrectPrediction"] = true;
-							console.log("Found match for " + JSON.stringify( predictedRelations[i] ) + " " + JSON.stringify( correctRelations[0][x] ) );
-							numberOfCorrectRelations++;
-							noMatchFound = false;
-						}
-					}
-					// If we didn't find a match, that prediction was false
-					if( noMatchFound ) {
-						console.log("No match found for " + JSON.stringify( predictedRelations[i] ) );
-						wrongPredictions++;
-					}
-					noMatchFound = true;
-				}
-			} else {
-				predictedRelations.push('{"correctPredictions":"0%"}');
-			}
+				//console.log(correctRelations[0]);
+				//console.log(predictedRelations);
+				var predictedRelationsLength = predictedRelations.length;
+				console.log("No predictions: " + predictedRelationsLength );
+				predictedRelations.push('{"numberOfPredictions":"'+predictedRelations.length+'"}');
+				predictedRelations.push('{"correctPredictions":"'+numberOfCorrectRelations+'"}');
+				predictedRelations.push('{"wrongPredictions":"'+wrongPredictions+'"}');
+				predictedRelations.push('{"correct%":"'+numberOfCorrectRelations/predictedRelationsLength +'"}');
+				predictedRelations.push('{"numberOfRelations":"'+correctRelations[0].length+'"}');
+				predictedRelations.push('{"Time taken":"'+totalTime+'"}');
 
-			// // Calculate how many predictions that matched
-			// for( var i = 0 ; i < copyCorrectRelations[0].length ; i++ ) {
-			// 	if( copyCorrectRelations[0][i]["CorrectPrediction"] ) {
-			// 		numberOfCorrectRelations++;
-			// 	}
-			// }
-
-			console.log(correctRelations[0]);
-			console.log(predictedRelations);
-			console.log("No predictions: " + predictedRelations.length );
-			predictedRelations.push('{"numberOfPredictions":"'+predictedRelations.length+'"}');
-			predictedRelations.push('{"correct%":"'+numberOfCorrectRelations/correctRelations[0].length+'"}');
-			predictedRelations.push('{"correctPredictions":"'+numberOfCorrectRelations+'"}');
-			predictedRelations.push('{"numberOfRelations":"'+correctRelations[0].length+'"}');
-			predictedRelations.push('{"wrongPredictions":"'+wrongPredictions+'"}');
-
-			res.send( predictedRelations );
+				res.send( predictedRelations );
+			});
 		});
 	});
 
